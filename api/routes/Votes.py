@@ -22,7 +22,8 @@ votes = Blueprint('votes_blueprint', __name__)
 @Security.authorize(permissions_required=[(PermissionName.VOTES_MANAGER, PermissionType.READ)])
 def get_all_votes(*args):
     try:
-        votes_list = VoteService.get_all_votes()
+        params = QueryParameters(request)
+        votes_list = VoteService.get_all_votes(params)
         response_votes = []
         for vote in votes_list:
             response_votes.append(vote.to_json())
@@ -144,26 +145,3 @@ def edit_vote(*args,vote_id):
         Logger.add_to_log("error", traceback.format_exc())
         response = jsonify({'message': str(ex), 'success': False})
         return response, HTTPStatus.INTERNAL_SERVER_ERROR
-
-
-@votes.route('/filter', methods=['GET'])
-def get_vote_by_filter(*args, **kwargs):
-    try:
-        params = QueryParameters(request)
-        response_votes = []
-        votes_list = VoteService().get_votes_by_filter(params)
-        for vote in votes_list:
-            response_votes.append(vote.to_json())
-        response = jsonify({'success': True, 'data': response_votes})
-        return response, HTTPStatus.OK
-    except NotFoundException as ex:
-        response = jsonify({'message': ex.message, 'success': False})
-        return response, ex.error_code
-    except ValueError:
-        return jsonify({'message': "Vote id must be an integer", 'success': False})
-    except Exception as ex:
-        Logger.add_to_log("error", str(ex))
-        Logger.add_to_log("error", traceback.format_exc())
-        response = jsonify({'message': str(ex), 'success': False})
-        return response, HTTPStatus.INTERNAL_SERVER_ERROR
-

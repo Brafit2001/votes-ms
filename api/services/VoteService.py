@@ -12,12 +12,13 @@ from api.utils.QueryParameters import QueryParameters
 class VoteService:
 
     @classmethod
-    def get_all_votes(cls) -> list[Vote]:
+    def get_all_votes(cls, params: QueryParameters) -> list[Vote]:
         try:
             connection_dbvotes = get_connection('dbvotes')
             votes_list = []
             with (connection_dbvotes.cursor()) as cursor_dbvotes:
                 query = "select * from votes"
+                query = params.add_to_query(query)
                 cursor_dbvotes.execute(query)
                 result_set = cursor_dbvotes.fetchall()
                 if not result_set:
@@ -120,29 +121,4 @@ class VoteService:
             Logger.add_to_log("error", traceback.format_exc())
             raise
 
-    @classmethod
-    def get_votes_by_filter(cls, params: QueryParameters):
-        try:
-            connection_dbvotes = get_connection('dbvotes')
-            votes_list = []
-            with (connection_dbvotes.cursor()) as cursor_dbvotes:
-                query = "select * from votes"
-                query = params.add_to_query(query)
-                cursor_dbvotes.execute(query)
-                result_set = cursor_dbvotes.fetchall()
-                if not result_set:
-                    raise EmptyDbException("No votes found")
-                for row in result_set:
-                    vote = row_to_vote(row)
-                    votes_list.append(vote)
-            connection_dbvotes.close()
-            return votes_list
-        except mariadb.OperationalError:
-            raise
-        except EmptyDbException:
-            raise
-        except Exception as ex:
-            Logger.add_to_log("error", str(ex))
-            Logger.add_to_log("error", traceback.format_exc())
-            raise
 
