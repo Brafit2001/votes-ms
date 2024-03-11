@@ -1,0 +1,78 @@
+2024-03-10 16:54:08 | ERROR | 'Vote' object has no attribute 'name'
+2024-03-10 16:54:08 | ERROR | Traceback (most recent call last):
+  File "C:\Dev\Universidad\clipclass3.0\backend\services\votes-ms\api\services\VoteService.py", line 66, in add_vote
+    vote.name, vote.description, vote.classId)
+    ^^^^^^^^^
+AttributeError: 'Vote' object has no attribute 'name'
+
+2024-03-10 16:54:08 | ERROR | 'Vote' object has no attribute 'name'
+2024-03-10 16:54:08 | ERROR | Traceback (most recent call last):
+  File "C:\Dev\Universidad\clipclass3.0\backend\services\votes-ms\api\routes\Votes.py", line 81, in add_vote
+    VoteService.add_vote(_vote)
+  File "C:\Dev\Universidad\clipclass3.0\backend\services\votes-ms\api\services\VoteService.py", line 66, in add_vote
+    vote.name, vote.description, vote.classId)
+    ^^^^^^^^^
+AttributeError: 'Vote' object has no attribute 'name'
+
+2024-03-10 16:59:58 | ERROR | delete_vote() got multiple values for argument 'vote_id'
+2024-03-10 16:59:58 | ERROR | Traceback (most recent call last):
+  File "C:\Dev\Universidad\clipclass3.0\backend\services\votes-ms\api\utils\Security.py", line 131, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+TypeError: delete_vote() got multiple values for argument 'vote_id'
+
+2024-03-10 17:03:45 | ERROR | 'Vote' object has no attribute 'name'
+2024-03-10 17:03:45 | ERROR | Traceback (most recent call last):
+  File "C:\Dev\Universidad\clipclass3.0\backend\services\votes-ms\api\services\VoteService.py", line 109, in update_vote
+    vote.name, vote.description, vote.classId, vote.voteId)
+    ^^^^^^^^^
+AttributeError: 'Vote' object has no attribute 'name'
+
+2024-03-10 17:03:45 | ERROR | 'Vote' object has no attribute 'name'
+2024-03-10 17:03:45 | ERROR | Traceback (most recent call last):
+  File "C:\Dev\Universidad\clipclass3.0\backend\services\votes-ms\api\routes\Votes.py", line 130, in edit_vote
+    response_message = VoteService.update_vote(_vote)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Dev\Universidad\clipclass3.0\backend\services\votes-ms\api\services\VoteService.py", line 109, in update_vote
+    vote.name, vote.description, vote.classId, vote.voteId)
+    ^^^^^^^^^
+AttributeError: 'Vote' object has no attribute 'name'
+
+2024-03-11 11:30:11 | ERROR | get_all_reels() takes 0 positional arguments but 2 were given
+2024-03-11 11:30:11 | ERROR | Traceback (most recent call last):
+  File "C:\Dev\Universidad\clipclass3.0\backend\services\votes-ms\api\utils\Security.py", line 131, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+TypeError: get_all_reels() takes 0 positional arguments but 2 were given
+
+2024-03-11 11:30:41 | ERROR | get_all_votes() takes 0 positional arguments but 2 were given
+2024-03-11 11:30:41 | ERROR | Traceback (most recent call last):
+  File "C:\Dev\Universidad\clipclass3.0\backend\services\votes-ms\api\utils\Security.py", line 131, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+TypeError: get_all_votes() takes 0 positional arguments but 2 were given
+
+2024-03-11 11:33:18 | ERROR | 'Reel' object has no attribute 'content'
+2024-03-11 11:33:18 | ERROR | Traceback (most recent call last):
+  File "C:\Dev\Universidad\clipclass3.0\backend\services\votes-ms\api\services\ReelService.py", line 68, in add_reel
+    reel.userId, reel.topicId, reel.reelId, reel.content, reel.originality, reel.clarity, reel.mean)
+                                            ^^^^^^^^^^^^
+AttributeError: 'Reel' object has no attribute 'content'
+
+2024-03-11 11:33:18 | ERROR | 'Reel' object has no attribute 'content'
+2024-03-11 11:33:18 | ERROR | Traceback (most recent call last):
+  File "C:\Dev\Universidad\clipclass3.0\backend\services\votes-ms\api\routes\Reels.py", line 76, in add_reel
+    ReelService.add_reel(_reel)
+  File "C:\Dev\Universidad\clipclass3.0\backend\services\votes-ms\api\services\ReelService.py", line 68, in add_reel
+    reel.userId, reel.topicId, reel.reelId, reel.content, reel.originality, reel.clarity, reel.mean)
+                                            ^^^^^^^^^^^^
+AttributeError: 'Reel' object has no attribute 'content'
+
+2024-03-11 11:45:04 | ERROR | Cannot add or update a child row: a foreign key constraint fails (`dbvotes`.`reels`, CONSTRAINT `fk_reels_topic` FOREIGN KEY (`topic`) REFERENCES `dbgroups`.`topics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE)
+2024-03-11 11:45:04 | ERROR | Traceback (most recent call last):
+  File "C:\Dev\Universidad\clipclass3.0\backend\services\votes-ms\api\services\ReelService.py", line 110, in update_reel
+    cursor_dbvotes.execute(query)
+  File "C:\Dev\Universidad\clipclass3.0\backend\services\votes-ms\.venv\Lib\site-packages\mariadb\cursors.py", line 310, in execute
+    self._readresponse()
+mariadb.IntegrityError: Cannot add or update a child row: a foreign key constraint fails (`dbvotes`.`reels`, CONSTRAINT `fk_reels_topic` FOREIGN KEY (`topic`) REFERENCES `dbgroups`.`topics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE)
+
