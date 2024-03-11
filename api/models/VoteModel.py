@@ -28,8 +28,8 @@ def row_to_vote(row):
     return Vote(
         voteId=row[0],
         userId=row[1],
-        topicId=row[2],
-        reelId=row[3],
+        reelId=row[2],
+        topicId=row[3],
         content=row[4],
         originality=row[5],
         clarity=row[6],

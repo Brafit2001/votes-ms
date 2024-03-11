@@ -6,6 +6,7 @@ from api.database.db import get_connection
 from api.models.VoteModel import Vote, row_to_vote
 from api.utils.AppExceptions import NotFoundException, EmptyDbException
 from api.utils.Logger import Logger
+from api.utils.QueryParameters import QueryParameters
 
 
 class VoteService:
@@ -107,7 +108,7 @@ class VoteService:
                          ", clarity = '{}', mean = '{}' where id = '{}'"
                          ).format(
                     vote.userId, vote.topicId, vote.reelId, vote.content, vote.originality, vote.clarity,
-                    vote.mean,vote.voteId)
+                    vote.mean, vote.voteId)
                 cursor_dbvotes.execute(query)
                 connection_dbvotes.commit()
             connection_dbvotes.close()
@@ -118,3 +119,30 @@ class VoteService:
             Logger.add_to_log("error", str(ex))
             Logger.add_to_log("error", traceback.format_exc())
             raise
+
+    @classmethod
+    def get_votes_by_filter(cls, params: QueryParameters):
+        try:
+            connection_dbvotes = get_connection('dbvotes')
+            votes_list = []
+            with (connection_dbvotes.cursor()) as cursor_dbvotes:
+                query = "select * from votes"
+                query = params.add_to_query(query)
+                cursor_dbvotes.execute(query)
+                result_set = cursor_dbvotes.fetchall()
+                if not result_set:
+                    raise EmptyDbException("No votes found")
+                for row in result_set:
+                    vote = row_to_vote(row)
+                    votes_list.append(vote)
+            connection_dbvotes.close()
+            return votes_list
+        except mariadb.OperationalError:
+            raise
+        except EmptyDbException:
+            raise
+        except Exception as ex:
+            Logger.add_to_log("error", str(ex))
+            Logger.add_to_log("error", traceback.format_exc())
+            raise
+
