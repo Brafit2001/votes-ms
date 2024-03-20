@@ -17,7 +17,7 @@ def init_app(config):
     # app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
 
     # ----- BLUEPRINTS --------
-    from api.routes import Votes, Reels
+    from api.routes import Votes, Posts
     app.register_blueprint(Votes.votes, url_prefix='/votes')
-    app.register_blueprint(Reels.reels, url_prefix='/reels')
+    app.register_blueprint(Posts.posts, url_prefix='/posts')
     return app

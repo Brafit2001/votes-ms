@@ -3,29 +3,29 @@ import traceback
 import mariadb
 
 from api.database.db import get_connection
-from api.models.ReelModel import Reel, row_to_reel
+from api.models.PostModel import Post, row_to_post
 from api.utils.AppExceptions import NotFoundException, EmptyDbException
 from api.utils.Logger import Logger
 
 
-class ReelService:
+class PostService:
 
     @classmethod
-    def get_all_reels(cls) -> list[Reel]:
+    def get_all_posts(cls) -> list[Post]:
         try:
             connection_dbvotes = get_connection('dbvotes')
-            reels_list = []
+            posts_list = []
             with (connection_dbvotes.cursor()) as cursor_dbvotes:
-                query = "select * from reels"
+                query = "select * from posts"
                 cursor_dbvotes.execute(query)
                 result_set = cursor_dbvotes.fetchall()
                 if not result_set:
-                    raise EmptyDbException("No reels found")
+                    raise EmptyDbException("No posts found")
                 for row in result_set:
-                    reel = row_to_reel(row)
-                    reels_list.append(reel)
+                    post = row_to_post(row)
+                    posts_list.append(post)
             connection_dbvotes.close()
-            return reels_list
+            return posts_list
         except mariadb.OperationalError:
             raise
         except EmptyDbException:
@@ -36,20 +36,20 @@ class ReelService:
             raise
 
     @classmethod
-    def get_reel_by_id(cls, reelId: int) -> Reel:
+    def get_post_by_id(cls, postId: int) -> Post:
         try:
             connection_dbvotes = get_connection('dbvotes')
-            reel = None
+            post = None
             with connection_dbvotes.cursor() as cursor_dbvotes:
-                query = "select * from reels where id = '{}'".format(reelId)
+                query = "select * from posts where id = '{}'".format(postId)
                 cursor_dbvotes.execute(query)
                 row = cursor_dbvotes.fetchone()
                 if row is not None:
-                    reel = row_to_reel(row)
+                    post = row_to_post(row)
                 else:
-                    raise NotFoundException("Reel not found")
+                    raise NotFoundException("Post not found")
             connection_dbvotes.close()
-            return reel
+            return post
         except NotFoundException:
             raise
         except Exception as ex:
@@ -58,19 +58,19 @@ class ReelService:
             raise
 
     @classmethod
-    def add_reel(cls, reel: Reel):
+    def add_post(cls, post: Post):
         try:
             connection_dbvotes = get_connection('dbvotes')
             with (connection_dbvotes.cursor()) as cursor_dbvotes:
-                query = ("insert into `reels` set user = '{}', topic = '{}', title = '{}', image = '{}', video "
+                query = ("insert into `posts` set user = '{}', topic = '{}', title = '{}', type = '{}', content "
                          "= '{}'").format(
-                    reel.userId, reel.topicId, reel.title, reel.image, reel.video)
+                    post.userId, post.topicId, post.title, post.type.value, post.content)
                 cursor_dbvotes.execute(query)
                 connection_dbvotes.commit()
             connection_dbvotes.close()
-            return 'Reel added'
+            return 'Post added'
         except mariadb.IntegrityError:
-            # Reel already exists
+            # Post already exists
             raise
         except Exception as ex:
             Logger.add_to_log("error", str(ex))
@@ -78,17 +78,17 @@ class ReelService:
             raise
 
     @classmethod
-    def delete_reel(cls, reelId: int):
+    def delete_post(cls, postId: int):
         try:
-            # Check if reel exists
-            cls.get_reel_by_id(reelId)
+            # Check if post exists
+            cls.get_post_by_id(postId)
             connection_dbvotes = get_connection('dbvotes')
             with (connection_dbvotes.cursor()) as cursor_dbvotes:
-                query = "delete from `reels` where id = '{}'".format(reelId)
+                query = "delete from `posts` where id = '{}'".format(postId)
                 cursor_dbvotes.execute(query)
                 connection_dbvotes.commit()
             connection_dbvotes.close()
-            return f'Reel {reelId} deleted'
+            return f'Post {postId} deleted'
         except NotFoundException:
             raise
         except Exception as ex:
@@ -97,20 +97,20 @@ class ReelService:
             raise
 
     @classmethod
-    def update_reel(cls, reel: Reel):
+    def update_post(cls, post: Post):
         try:
-            # Check if reel exists
-            cls.get_reel_by_id(reel.reelId)
+            # Check if post exists
+            cls.get_post_by_id(post.postId)
             connection_dbvotes = get_connection('dbvotes')
             with ((connection_dbvotes.cursor()) as cursor_dbvotes):
-                query = ("update `reels` set user = '{}', topic = '{}', title = '{}', image = '{}', video "
+                query = ("update `posts` set user = '{}', topic = '{}', title = '{}', type = '{}', content "
                          "= '{}' where id = '{}'"
                          ).format(
-                    reel.userId, reel.topicId, reel.title, reel.image, reel.video, reel.reelId)
+                    post.userId, post.topicId, post.title, post.type.value, post.content, post.postId)
                 cursor_dbvotes.execute(query)
                 connection_dbvotes.commit()
             connection_dbvotes.close()
-            return f'Reel {reel.reelId} updated'
+            return f'Post {post.postId} updated'
         except NotFoundException:
             raise
         except Exception as ex:

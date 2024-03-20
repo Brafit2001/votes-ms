@@ -7,26 +7,26 @@ from flask import Blueprint, jsonify, request
 from api.models.PermissionModel import PermissionName, PermissionType
 
 
-from api.models.ReelModel import Reel
-from api.services.ReelService import ReelService
+from api.models.PostModel import Post, PostType
+from api.services.PostService import PostService
 from api.utils.AppExceptions import EmptyDbException, NotFoundException, handle_maria_db_exception
 from api.utils.Logger import Logger
 from api.utils.Security import Security
 
 
-reels = Blueprint('reels_blueprint', __name__)
+posts = Blueprint('posts_blueprint', __name__)
 
 
-@reels.route('/', methods=['GET'])
+@posts.route('/', methods=['GET'])
 @Security.authenticate
 @Security.authorize(permissions_required=[(PermissionName.VOTES_MANAGER, PermissionType.READ)])
-def get_all_reels(*args):
+def get_all_posts(*args):
     try:
-        reels_list = ReelService.get_all_reels()
-        response_reels = []
-        for reel in reels_list:
-            response_reels.append(reel.to_json())
-        response = jsonify({'success': True, 'data': response_reels})
+        posts_list = PostService.get_all_posts()
+        response_posts = []
+        for post in posts_list:
+            response_posts.append(post.to_json())
+        response = jsonify({'success': True, 'data': response_posts})
         return response, HTTPStatus.OK
     except mariadb.OperationalError as ex:
         response = jsonify({'success': False, 'message': str(ex)})
@@ -41,20 +41,20 @@ def get_all_reels(*args):
         return response, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
-@reels.route('/<reel_id>', methods=['GET'])
+@posts.route('/<post_id>', methods=['GET'])
 @Security.authenticate
 @Security.authorize(permissions_required=[(PermissionName.GROUPS_MANAGER, PermissionType.READ)])
-def get_reel_by_id(*args, reel_id):
+def get_post_by_id(*args, post_id):
     try:
-        reel_id = int(reel_id)
-        reel = ReelService.get_reel_by_id(reel_id)
-        response = jsonify({'success': True, 'data': reel.to_json()})
+        post_id = int(post_id)
+        post = PostService.get_post_by_id(post_id)
+        response = jsonify({'success': True, 'data': post.to_json()})
         return response, HTTPStatus.OK
     except NotFoundException as ex:
         response = jsonify({'message': ex.message, 'success': False})
         return response, ex.error_code
     except ValueError:
-        return jsonify({'message': "Reel id must be an integer", 'success': False})
+        return jsonify({'message': "Post id must be an integer", 'success': False})
     except Exception as ex:
         Logger.add_to_log("error", str(ex))
         Logger.add_to_log("error", traceback.format_exc())
@@ -62,19 +62,19 @@ def get_reel_by_id(*args, reel_id):
         return response, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
-@reels.route('/', methods=['POST'])
+@posts.route('/', methods=['POST'])
 @Security.authenticate
 @Security.authorize(permissions_required=[(PermissionName.GROUPS_MANAGER, PermissionType.WRITE)])
-def add_reel(*args):
+def add_post(*args):
     try:
         user_id = int(args[0]["userId"])
         topic_id = int(request.json['topic'])
         title = request.json['title']
-        image = request.json['image']
-        video = request.json['video']
-        _reel = Reel(reelId=0, userId=user_id, topicId=topic_id, title=title, image=image, video=video)
-        ReelService.add_reel(_reel)
-        response = jsonify({'message': 'Reel created successfully', 'success': True})
+        post_type = PostType(int(request.json['type']))
+        content = request.json['content']
+        _post = Post(postId=0, userId=user_id, topicId=topic_id, title=title, post_type=post_type, content=content)
+        PostService.add_post(_post)
+        response = jsonify({'message': 'Post created successfully', 'success': True})
         return response, HTTPStatus.OK
     except KeyError:
         response = jsonify({'message': 'Bad body format', 'success': False})
@@ -89,12 +89,12 @@ def add_reel(*args):
         return response, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
-@reels.route('/<reel_id>', methods=['DELETE'])
+@posts.route('/<post_id>', methods=['DELETE'])
 @Security.authenticate
 @Security.authorize(permissions_required=[(PermissionName.GROUPS_MANAGER, PermissionType.WRITE)])
-def delete_reel(*args, reel_id):
+def delete_post(*args, post_id):
     try:
-        response_message = ReelService.delete_reel(reel_id)
+        response_message = PostService.delete_post(post_id)
         response = jsonify({'message': response_message, 'success': True})
         return response, HTTPStatus.OK
     except NotFoundException as ex:
@@ -107,18 +107,18 @@ def delete_reel(*args, reel_id):
         return response, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
-@reels.route('/<reel_id>', methods=['PUT'])
+@posts.route('/<post_id>', methods=['PUT'])
 @Security.authenticate
 @Security.authorize(permissions_required=[(PermissionName.GROUPS_MANAGER, PermissionType.WRITE)])
-def edit_reel(*args, reel_id):
+def edit_post(*args, post_id):
     try:
         user_id = int(args[0]["userId"])
         topic_id = int(request.json['topic'])
         title = request.json['title']
-        image = request.json['image']
-        video = request.json['video']
-        _reel = Reel(reelId=reel_id, userId=user_id, topicId=topic_id, title=title, image=image, video=video)
-        response_message = ReelService.update_reel(_reel)
+        post_type = PostType(int(request.json['type']))
+        content = request.json['content']
+        _post = Post(postId=post_id, userId=user_id, topicId=topic_id, title=title, post_type=post_type, content=content)
+        response_message = PostService.update_post(_post)
         response = jsonify({'message': response_message, 'success': True})
         return response, HTTPStatus.OK
     except KeyError:
