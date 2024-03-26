@@ -71,12 +71,12 @@ def add_vote(*args):
 
         user_id = int(args[0]["userId"])
         topic_id = int(request.json['topic'])
-        reel_id = int(request.json['reel'])
+        post_id = int(request.json['post'])
         content = float(request.json['content'])
         originality = float(request.json['originality'])
         clarity = float(request.json['clarity'])
         mean = (content + originality + clarity) / 3
-        _vote = Vote(voteId=0, userId=user_id, topicId=topic_id, reelId=reel_id,
+        _vote = Vote(voteId=0, userId=user_id, topicId=topic_id, postId=post_id,
                      content=content, originality=originality,
                      clarity=clarity, mean=mean)
         VoteService.add_vote(_vote)
@@ -120,12 +120,12 @@ def edit_vote(*args,vote_id):
     try:
         user_id = int(args[0]["userId"])
         topic_id = int(request.json['topic'])
-        reel_id = int(request.json['reel'])
+        post_id = int(request.json['post'])
         content = float(request.json['content'])
         originality = float(request.json['originality'])
         clarity = float(request.json['clarity'])
         mean = (content + originality + clarity) / 3
-        _vote = Vote(voteId=vote_id, userId=user_id, topicId=topic_id, reelId=reel_id,
+        _vote = Vote(voteId=vote_id, userId=user_id, topicId=topic_id, postId=post_id,
                      content=content, originality=originality,
                      clarity=clarity, mean=mean)
         response_message = VoteService.update_vote(_vote)

@@ -1,11 +1,11 @@
 
 class Vote:
 
-    def __init__(self, voteId, userId, topicId, reelId, content, originality, clarity, mean):
+    def __init__(self, voteId, userId, topicId, postId, content, originality, clarity, mean):
         self.voteId = voteId
         self.userId = userId
         self.topicId = topicId
-        self.reelId = reelId
+        self.postId = postId
         self.content = content
         self.originality = originality
         self.clarity = clarity
@@ -16,7 +16,7 @@ class Vote:
             'voteId': self.voteId,
             'userId': self.userId,
             'topicId': self.topicId,
-            'reelId': self.reelId,
+            'postId': self.postId,
             'content': self.content,
             'originality': self.originality,
             'clarity': self.clarity,
@@ -28,7 +28,7 @@ def row_to_vote(row):
     return Vote(
         voteId=row[0],
         userId=row[1],
-        reelId=row[2],
+        postId=row[2],
         topicId=row[3],
         content=row[4],
         originality=row[5],

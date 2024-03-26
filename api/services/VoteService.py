@@ -64,9 +64,9 @@ class VoteService:
         try:
             connection_dbvotes = get_connection('dbvotes')
             with (connection_dbvotes.cursor()) as cursor_dbvotes:
-                query = ("insert into `votes` set user = '{}', topic = '{}', reel = '{}', content = '{}', originality "
+                query = ("insert into `votes` set user = '{}', topic = '{}', post = '{}', content = '{}', originality "
                          "= '{}', clarity = '{}', mean = '{}'").format(
-                    vote.userId, vote.topicId, vote.reelId, vote.content, vote.originality, vote.clarity, vote.mean)
+                    vote.userId, vote.topicId, vote.postId, vote.content, vote.originality, vote.clarity, vote.mean)
                 cursor_dbvotes.execute(query)
                 connection_dbvotes.commit()
             connection_dbvotes.close()
@@ -105,10 +105,10 @@ class VoteService:
             cls.get_vote_by_id(vote.voteId)
             connection_dbvotes = get_connection('dbvotes')
             with ((connection_dbvotes.cursor()) as cursor_dbvotes):
-                query = ("update `votes` set user = '{}', topic = '{}', reel = '{}', content = '{}', originality = '{}'"
+                query = ("update `votes` set user = '{}', topic = '{}', post = '{}', content = '{}', originality = '{}'"
                          ", clarity = '{}', mean = '{}' where id = '{}'"
                          ).format(
-                    vote.userId, vote.topicId, vote.reelId, vote.content, vote.originality, vote.clarity,
+                    vote.userId, vote.topicId, vote.postId, vote.content, vote.originality, vote.clarity,
                     vote.mean, vote.voteId)
                 cursor_dbvotes.execute(query)
                 connection_dbvotes.commit()
