@@ -13,10 +13,10 @@ class Vote:
 
     def to_json(self):
         return {
-            'voteId': self.voteId,
-            'userId': self.userId,
-            'topicId': self.topicId,
-            'postId': self.postId,
+            'id': self.voteId,
+            'user': self.userId,
+            'topic': self.topicId,
+            'post': self.postId,
             'content': self.content,
             'originality': self.originality,
             'clarity': self.clarity,

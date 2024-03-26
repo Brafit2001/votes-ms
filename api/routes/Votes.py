@@ -68,7 +68,7 @@ def get_vote_by_id(*args, vote_id):
 @Security.authorize(permissions_required=[(PermissionName.GROUPS_MANAGER, PermissionType.WRITE)])
 def add_vote(*args):
     try:
-
+        print(request.json)
         user_id = int(args[0]["userId"])
         topic_id = int(request.json['topic'])
         post_id = int(request.json['post'])
@@ -82,7 +82,7 @@ def add_vote(*args):
         VoteService.add_vote(_vote)
         response = jsonify({'message': 'Vote created successfully', 'success': True})
         return response, HTTPStatus.OK
-    except KeyError:
+    except KeyError as ex:
         response = jsonify({'message': 'Bad body format', 'success': False})
         return response, HTTPStatus.BAD_REQUEST
     except mariadb.IntegrityError as ex:

@@ -19,9 +19,9 @@ class Post:
 
     def to_json(self):
         return {
-            'postId': self.postId,
-            'userId': self.userId,
-            'topicId': self.topicId,
+            'id': self.postId,
+            'user': self.userId,
+            'topic': self.topicId,
             'title': self.title,
             'type': self.type.name,
             'content': self.content,
