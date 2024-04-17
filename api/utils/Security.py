@@ -14,6 +14,10 @@ from api.utils.AppExceptions import NotAuthorized
 from api.utils.Logger import Logger
 
 
+
+USERS_MS_PATH = 'http://users-ms:8080'
+
+
 class Security:
     secret = config('SECRET_KEY')
     tz = pytz.timezone("Europe/Madrid")
@@ -122,7 +126,7 @@ class Security:
                 try:
                     token = args[1]
                     headers = {'Authorization': token}
-                    response = requests.get('http://localhost:8080/auth/permissions', headers=headers).json()
+                    response = requests.get(USERS_MS_PATH + '/auth/permissions', headers=headers).json()
                     permissions_list = response["data"]
                     for pr in permissions_required:
                         permission = [pr[0].value, pr[1].value]
