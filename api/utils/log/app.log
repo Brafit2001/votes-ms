@@ -1,78 +1,37 @@
-2024-03-10 16:54:08 | ERROR | 'Vote' object has no attribute 'name'
-2024-03-10 16:54:08 | ERROR | Traceback (most recent call last):
-  File "C:\Dev\Universidad\clipclass3.0\backend\services\votes-ms\api\services\VoteService.py", line 66, in add_vote
-    vote.name, vote.description, vote.classId)
-    ^^^^^^^^^
-AttributeError: 'Vote' object has no attribute 'name'
+2024-05-09 19:52:52 | INFO | {'id': 2, 'user': 1, 'topic': 1, 'title': 'Prueba de edit', 'type': 0, 'content': '6ejU8CqqL5h0aukU2H3EuklP767mM5Cp37RbuOC3pMySaPhgBfEqywcuzOeqUqPl.webp', 'visible': 0}
+2024-05-09 19:52:52 | INFO | uploading files to firebase
+2024-05-09 19:52:52 | INFO | image/<class 'type'>
+2024-05-09 19:52:52 | ERROR | 'str' object has no attribute 'tell'
+2024-05-09 19:52:52 | ERROR | Traceback (most recent call last):
+  File "/app/api/utils/FirebaseFunctions.py", line 36, in uploadFirebase
+    imageBlob.upload_from_file(image, content_type=content_type)
+  File "/usr/local/lib/python3.11/site-packages/google/cloud/storage/blob.py", line 2796, in upload_from_file
+    self._prep_and_do_upload(
+  File "/usr/local/lib/python3.11/site-packages/google/cloud/storage/blob.py", line 2637, in _prep_and_do_upload
+    created_json = self._do_upload(
+                   ^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/google/cloud/storage/blob.py", line 2460, in _do_upload
+    response = self._do_resumable_upload(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/google/cloud/storage/blob.py", line 2278, in _do_resumable_upload
+    upload, transport = self._initiate_resumable_upload(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/google/cloud/storage/blob.py", line 2152, in _initiate_resumable_upload
+    upload.initiate(
+  File "/usr/local/lib/python3.11/site-packages/google/resumable_media/requests/upload.py", line 402, in initiate
+    method, url, payload, headers = self._prepare_initiate_request(
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/google/resumable_media/_upload.py", line 470, in _prepare_initiate_request
+    if stream.tell() != 0:
+       ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'tell'
 
-2024-03-10 16:54:08 | ERROR | 'Vote' object has no attribute 'name'
-2024-03-10 16:54:08 | ERROR | Traceback (most recent call last):
-  File "C:\Dev\Universidad\clipclass3.0\backend\services\votes-ms\api\routes\Votes.py", line 81, in add_vote
-    VoteService.add_vote(_vote)
-  File "C:\Dev\Universidad\clipclass3.0\backend\services\votes-ms\api\services\VoteService.py", line 66, in add_vote
-    vote.name, vote.description, vote.classId)
-    ^^^^^^^^^
-AttributeError: 'Vote' object has no attribute 'name'
-
-2024-03-10 16:59:58 | ERROR | delete_vote() got multiple values for argument 'vote_id'
-2024-03-10 16:59:58 | ERROR | Traceback (most recent call last):
-  File "C:\Dev\Universidad\clipclass3.0\backend\services\votes-ms\api\utils\Security.py", line 131, in wrapper
-    return func(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^
-TypeError: delete_vote() got multiple values for argument 'vote_id'
-
-2024-03-10 17:03:45 | ERROR | 'Vote' object has no attribute 'name'
-2024-03-10 17:03:45 | ERROR | Traceback (most recent call last):
-  File "C:\Dev\Universidad\clipclass3.0\backend\services\votes-ms\api\services\VoteService.py", line 109, in update_vote
-    vote.name, vote.description, vote.classId, vote.voteId)
-    ^^^^^^^^^
-AttributeError: 'Vote' object has no attribute 'name'
-
-2024-03-10 17:03:45 | ERROR | 'Vote' object has no attribute 'name'
-2024-03-10 17:03:45 | ERROR | Traceback (most recent call last):
-  File "C:\Dev\Universidad\clipclass3.0\backend\services\votes-ms\api\routes\Votes.py", line 130, in edit_vote
-    response_message = VoteService.update_vote(_vote)
-                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Dev\Universidad\clipclass3.0\backend\services\votes-ms\api\services\VoteService.py", line 109, in update_vote
-    vote.name, vote.description, vote.classId, vote.voteId)
-    ^^^^^^^^^
-AttributeError: 'Vote' object has no attribute 'name'
-
-2024-03-11 11:30:11 | ERROR | get_all_reels() takes 0 positional arguments but 2 were given
-2024-03-11 11:30:11 | ERROR | Traceback (most recent call last):
-  File "C:\Dev\Universidad\clipclass3.0\backend\services\votes-ms\api\utils\Security.py", line 131, in wrapper
-    return func(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^
-TypeError: get_all_reels() takes 0 positional arguments but 2 were given
-
-2024-03-11 11:30:41 | ERROR | get_all_votes() takes 0 positional arguments but 2 were given
-2024-03-11 11:30:41 | ERROR | Traceback (most recent call last):
-  File "C:\Dev\Universidad\clipclass3.0\backend\services\votes-ms\api\utils\Security.py", line 131, in wrapper
-    return func(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^
-TypeError: get_all_votes() takes 0 positional arguments but 2 were given
-
-2024-03-11 11:33:18 | ERROR | 'Reel' object has no attribute 'content'
-2024-03-11 11:33:18 | ERROR | Traceback (most recent call last):
-  File "C:\Dev\Universidad\clipclass3.0\backend\services\votes-ms\api\services\ReelService.py", line 68, in add_reel
-    reel.userId, reel.topicId, reel.reelId, reel.content, reel.originality, reel.clarity, reel.mean)
-                                            ^^^^^^^^^^^^
-AttributeError: 'Reel' object has no attribute 'content'
-
-2024-03-11 11:33:18 | ERROR | 'Reel' object has no attribute 'content'
-2024-03-11 11:33:18 | ERROR | Traceback (most recent call last):
-  File "C:\Dev\Universidad\clipclass3.0\backend\services\votes-ms\api\routes\Reels.py", line 76, in add_reel
-    ReelService.add_reel(_reel)
-  File "C:\Dev\Universidad\clipclass3.0\backend\services\votes-ms\api\services\ReelService.py", line 68, in add_reel
-    reel.userId, reel.topicId, reel.reelId, reel.content, reel.originality, reel.clarity, reel.mean)
-                                            ^^^^^^^^^^^^
-AttributeError: 'Reel' object has no attribute 'content'
-
-2024-03-11 11:45:04 | ERROR | Cannot add or update a child row: a foreign key constraint fails (`dbvotes`.`reels`, CONSTRAINT `fk_reels_topic` FOREIGN KEY (`topic`) REFERENCES `dbgroups`.`topics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE)
-2024-03-11 11:45:04 | ERROR | Traceback (most recent call last):
-  File "C:\Dev\Universidad\clipclass3.0\backend\services\votes-ms\api\services\ReelService.py", line 110, in update_reel
-    cursor_dbvotes.execute(query)
-  File "C:\Dev\Universidad\clipclass3.0\backend\services\votes-ms\.venv\Lib\site-packages\mariadb\cursors.py", line 310, in execute
-    self._readresponse()
-mariadb.IntegrityError: Cannot add or update a child row: a foreign key constraint fails (`dbvotes`.`reels`, CONSTRAINT `fk_reels_topic` FOREIGN KEY (`topic`) REFERENCES `dbgroups`.`topics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE)
-
+2024-05-09 19:52:52 | INFO | update `posts` set user = '1', topic = '1', title = 'Prueba de edit', type = '0', content = 'DFcZJ7XHG9tU9Ym6eQpG9bheiXJl0USqVlQxdYUQrBUYZHk15pKioPupeo0zURC8.webp', visible = '0' where id = '2'
+2024-05-09 19:55:43 | INFO | {'id': 2, 'user': 1, 'topic': 1, 'title': 'Prueba de edit', 'type': 0, 'content': 'DFcZJ7XHG9tU9Ym6eQpG9bheiXJl0USqVlQxdYUQrBUYZHk15pKioPupeo0zURC8.webp', 'visible': 0}
+2024-05-09 19:55:43 | INFO | uploading files to firebase
+2024-05-09 19:55:43 | INFO | image/<class 'type'>
+2024-05-09 19:55:44 | INFO | update `posts` set user = '1', topic = '1', title = 'Prueba de edit', type = '0', content = '4ixHlbiVTYWv4AFaA3d6iiD9NKcSczt9knJ2QFB662krWESaVh1VtHUQF8KdW7YD.webp', visible = '0' where id = '2'
+2024-05-09 19:55:54 | INFO | {'id': 2, 'user': 1, 'topic': 1, 'title': 'Prueba de edit', 'type': 0, 'content': '4ixHlbiVTYWv4AFaA3d6iiD9NKcSczt9knJ2QFB662krWESaVh1VtHUQF8KdW7YD.webp', 'visible': 0}
+2024-05-09 19:55:54 | INFO | uploading files to firebase
+2024-05-09 19:55:54 | INFO | image/<class 'type'>
+2024-05-09 19:55:54 | INFO | update `posts` set user = '1', topic = '1', title = 'Prueba de edit', type = '0', content = 'uEWqWI9wmc699CSChn7G2VAgwfuui7q7qt6iI31ulYBn0PfNH4mzcJTMjRmVouai.webp', visible = '0' where id = '2'

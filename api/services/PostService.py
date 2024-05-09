@@ -11,12 +11,13 @@ from api.utils.Logger import Logger
 class PostService:
 
     @classmethod
-    def get_all_posts(cls) -> list[Post]:
+    def get_all_posts(cls, params) -> list[Post]:
         try:
             connection_dbvotes = get_connection('dbvotes')
             posts_list = []
             with (connection_dbvotes.cursor()) as cursor_dbvotes:
                 query = "select * from posts"
+                query = params.add_to_query(query)
                 cursor_dbvotes.execute(query)
                 result_set = cursor_dbvotes.fetchall()
                 if not result_set:
@@ -63,8 +64,8 @@ class PostService:
             connection_dbvotes = get_connection('dbvotes')
             with (connection_dbvotes.cursor()) as cursor_dbvotes:
                 query = ("insert into `posts` set user = '{}', topic = '{}', title = '{}', type = '{}', content "
-                         "= '{}'").format(
-                    post.userId, post.topicId, post.title, post.type.value, post.content)
+                         "= '{}', visible = '{}'").format(
+                    post.userId, post.topicId, post.title, post.type.value, post.content, post.visible)
                 cursor_dbvotes.execute(query)
                 connection_dbvotes.commit()
             connection_dbvotes.close()
@@ -104,9 +105,10 @@ class PostService:
             connection_dbvotes = get_connection('dbvotes')
             with ((connection_dbvotes.cursor()) as cursor_dbvotes):
                 query = ("update `posts` set user = '{}', topic = '{}', title = '{}', type = '{}', content "
-                         "= '{}' where id = '{}'"
+                         "= '{}', visible = '{}' where id = '{}'"
                          ).format(
-                    post.userId, post.topicId, post.title, post.type.value, post.content, post.postId)
+                    post.userId, post.topicId, post.title, post.type.value, post.content, post.visible, post.postId)
+                Logger.add_to_log("info", query)
                 cursor_dbvotes.execute(query)
                 connection_dbvotes.commit()
             connection_dbvotes.close()

@@ -5,6 +5,8 @@ class QueryParameters:
         self.topic = request.args.get("topic")
         self.reel = request.args.get("reel")
         self.type = request.args.get("type")
+        self.post = request.args.get("post")
+        self.visible = request.args.get("visible")
 
     def add_to_query(self, query: str):
         for param in self.__dict__:

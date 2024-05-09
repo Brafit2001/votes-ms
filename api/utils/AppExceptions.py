@@ -45,6 +45,19 @@ class NotAuthorized(Exception):
         self.error_code = HTTPStatus.UNAUTHORIZED
 
 
+class BadRequestException(Exception):
+    """Exception raised when user is not authorized to.
+
+        Attributes:
+            message -- explanation of the error
+            error_code -- code of the error
+    """
+
+    def __init__(self, message):
+        super().__init__(message)
+        self.message = message
+        self.error_code = HTTPStatus.BAD_REQUEST
+
 def handle_maria_db_exception(ex):
     message = str(ex)
     if 'foreign key constraint fails' in str(ex) and 'FOREIGN KEY (`reel`)' in str(ex):

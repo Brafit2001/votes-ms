@@ -68,7 +68,6 @@ def get_vote_by_id(*args, vote_id):
 @Security.authorize(permissions_required=[(PermissionName.GROUPS_MANAGER, PermissionType.WRITE)])
 def add_vote(*args):
     try:
-        print(request.json)
         user_id = int(args[0]["userId"])
         topic_id = int(request.json['topic'])
         post_id = int(request.json['post'])
