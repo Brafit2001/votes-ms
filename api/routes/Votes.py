@@ -22,10 +22,13 @@ votes = Blueprint('votes_blueprint', __name__)
 @Security.authorize(permissions_required=[(PermissionName.VOTES_MANAGER, PermissionType.READ)])
 def get_all_votes(*args):
     try:
+        Logger.add_to_log("info", args)
         params = QueryParameters(request)
         votes_list = VoteService.get_all_votes(params)
         response_votes = []
         for vote in votes_list:
+            ratings = VoteService.get_vote_ratings(vote.voteId)
+            vote.ratings = ratings
             response_votes.append(vote.to_json())
         response = jsonify({'success': True, 'data': response_votes})
         return response, HTTPStatus.OK
@@ -49,6 +52,8 @@ def get_vote_by_id(*args, vote_id):
     try:
         vote_id = int(vote_id)
         vote = VoteService.get_vote_by_id(vote_id)
+        ratings = VoteService.get_vote_ratings(vote_id)
+        vote.ratings = ratings
         response = jsonify({'success': True, 'data': vote.to_json()})
         return response, HTTPStatus.OK
     except NotFoundException as ex:
@@ -68,20 +73,22 @@ def get_vote_by_id(*args, vote_id):
 @Security.authorize(permissions_required=[(PermissionName.GROUPS_MANAGER, PermissionType.WRITE)])
 def add_vote(*args):
     try:
+        ratings = request.json["ratings"]
         user_id = int(args[0]["userId"])
-        topic_id = int(request.json['topic'])
         post_id = int(request.json['post'])
-        content = float(request.json['content'])
-        originality = float(request.json['originality'])
-        clarity = float(request.json['clarity'])
-        mean = (content + originality + clarity) / 3
-        _vote = Vote(voteId=0, userId=user_id, topicId=topic_id, postId=post_id,
-                     content=content, originality=originality,
-                     clarity=clarity, mean=mean)
-        VoteService.add_vote(_vote)
-        response = jsonify({'message': 'Vote created successfully', 'success': True})
+        mean = 0
+        for rubric in ratings:
+            mean += float(rubric["rating"])
+        mean = mean / len(ratings)
+        vote = Vote(voteId=0, userId=user_id, postId=post_id, mean=mean)
+        vote = VoteService.add_vote(vote)
+        for rubric in ratings:
+            VoteService.rate_rubric(vote.voteId, rubric["rubric_id"], rubric["rating"])
+        response = jsonify({'message': "Vote added successfully", 'success': True})
         return response, HTTPStatus.OK
     except KeyError as ex:
+        Logger.add_to_log("error", str(ex))
+        Logger.add_to_log("error", traceback.format_exc())
         response = jsonify({'message': 'Bad body format', 'success': False})
         return response, HTTPStatus.BAD_REQUEST
     except mariadb.IntegrityError as ex:
@@ -117,18 +124,16 @@ def delete_vote(*args, vote_id):
 @Security.authorize(permissions_required=[(PermissionName.GROUPS_MANAGER, PermissionType.WRITE)])
 def edit_vote(*args,vote_id):
     try:
-        user_id = int(args[0]["userId"])
-        topic_id = int(request.json['topic'])
-        post_id = int(request.json['post'])
-        content = float(request.json['content'])
-        originality = float(request.json['originality'])
-        clarity = float(request.json['clarity'])
-        mean = (content + originality + clarity) / 3
-        _vote = Vote(voteId=vote_id, userId=user_id, topicId=topic_id, postId=post_id,
-                     content=content, originality=originality,
-                     clarity=clarity, mean=mean)
-        response_message = VoteService.update_vote(_vote)
-        response = jsonify({'message': response_message, 'success': True})
+        ratings = request.json["ratings"]
+        mean = 0
+        for rubric in ratings:
+            mean += float(rubric["rating"])
+        mean = mean / len(ratings)
+        _vote = Vote(voteId=vote_id, userId=0, postId=0, mean=mean)
+        VoteService.update_vote(_vote)
+        for rubric in ratings:
+            VoteService.update_rating(vote_id, rubric["rubric_id"], rubric["rating"])
+        response = jsonify({'message': _vote.to_json(), 'success': True})
         return response, HTTPStatus.OK
     except KeyError:
         response = jsonify({'message': 'Bad body format', 'success': False})

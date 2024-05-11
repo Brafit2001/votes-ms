@@ -60,17 +60,48 @@ class VoteService:
             raise
 
     @classmethod
+    def get_vote_ratings(cls, voteId: int) -> list:
+        try:
+            connection_dbvotes = get_connection('dbvotes')
+            vote_ratings = []
+            with connection_dbvotes.cursor() as cursor_dbvotes:
+                query = ("SELECT b.*, rating from relationvotesrubrics a "
+                         "INNER JOIN dbcourses.rubrics b ON a.rubric = b.id where vote = '{}'").format(voteId)
+                cursor_dbvotes.execute(query)
+                result_set = cursor_dbvotes.fetchall()
+                Logger.add_to_log("info", result_set)
+                if not result_set:
+                    raise EmptyDbException("No ratings found")
+                for row in result_set:
+                    rating = {
+                        "rubric_id": row[0],
+                        "rubric_name": row[1],
+                        "rating": row[2]
+                    }
+                    vote_ratings.append(rating)
+            connection_dbvotes.close()
+            return vote_ratings
+        except NotFoundException:
+            raise
+        except Exception as ex:
+            Logger.add_to_log("error", str(ex))
+            Logger.add_to_log("error", traceback.format_exc())
+            raise
+
+    @classmethod
     def add_vote(cls, vote: Vote):
         try:
             connection_dbvotes = get_connection('dbvotes')
             with (connection_dbvotes.cursor()) as cursor_dbvotes:
-                query = ("insert into `votes` set user = '{}', topic = '{}', post = '{}', content = '{}', originality "
-                         "= '{}', clarity = '{}', mean = '{}'").format(
-                    vote.userId, vote.topicId, vote.postId, vote.content, vote.originality, vote.clarity, vote.mean)
+                query = ("insert into `votes` set user = '{}', post = '{}', mean = '{}' "
+                         "returning id").format(vote.userId, vote.postId, vote.mean)
                 cursor_dbvotes.execute(query)
+                row = cursor_dbvotes.fetchone()
+                vote.voteId = row[0]
+                Logger.add_to_log("info", row[0])
                 connection_dbvotes.commit()
             connection_dbvotes.close()
-            return 'Vote added'
+            return vote
         except mariadb.IntegrityError:
             # Vote already exists
             raise
@@ -105,11 +136,9 @@ class VoteService:
             cls.get_vote_by_id(vote.voteId)
             connection_dbvotes = get_connection('dbvotes')
             with ((connection_dbvotes.cursor()) as cursor_dbvotes):
-                query = ("update `votes` set user = '{}', topic = '{}', post = '{}', content = '{}', originality = '{}'"
-                         ", clarity = '{}', mean = '{}' where id = '{}'"
-                         ).format(
-                    vote.userId, vote.topicId, vote.postId, vote.content, vote.originality, vote.clarity,
-                    vote.mean, vote.voteId)
+                query = ("update `votes` set mean = '{}' where id = '{}'"
+                         ).format(vote.mean, vote.voteId)
+                Logger.add_to_log("info", query)
                 cursor_dbvotes.execute(query)
                 connection_dbvotes.commit()
             connection_dbvotes.close()
@@ -120,5 +149,46 @@ class VoteService:
             Logger.add_to_log("error", str(ex))
             Logger.add_to_log("error", traceback.format_exc())
             raise
+
+    @classmethod
+    def rate_rubric(cls, voteId, rubricId, rating):
+        try:
+            connection_dbvotes = get_connection('dbvotes')
+            with connection_dbvotes.cursor() as cursor_dbvotes:
+                query = "insert into relationvotesrubrics set vote='{}', `rubric`='{}', rating = '{}'".format(
+                    voteId, rubricId, rating)
+                Logger.add_to_log("info", query)
+                cursor_dbvotes.execute(query)
+                connection_dbvotes.commit()
+            connection_dbvotes.close()
+            return 'Rating was successfully added to rubric'
+        except NotFoundException:
+            raise
+        except Exception as ex:
+            Logger.add_to_log("error", str(ex))
+            Logger.add_to_log("error", traceback.format_exc())
+            raise
+
+    @classmethod
+    def update_rating(cls, voteId, rubricId, rating):
+        try:
+            connection_dbvotes = get_connection('dbvotes')
+            with connection_dbvotes.cursor() as cursor_dbvotes:
+                query = ("update relationvotesrubrics set rating = '{}' "
+                         "where vote = '{}' and rubric = '{}'").format(
+                    rating, voteId, rubricId)
+                Logger.add_to_log("info", query)
+                cursor_dbvotes.execute(query)
+                connection_dbvotes.commit()
+            connection_dbvotes.close()
+            return 'Ratings was successfully updated'
+        except NotFoundException:
+            raise
+        except Exception as ex:
+            Logger.add_to_log("error", str(ex))
+            Logger.add_to_log("error", traceback.format_exc())
+            raise
+
+
 
 
