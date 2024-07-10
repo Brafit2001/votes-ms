@@ -128,6 +128,8 @@ class Security:
                     headers = {'Authorization': token}
                     response = requests.get(USERS_MS_PATH + '/auth/permissions', headers=headers).json()
                     permissions_list = response["data"]
+                    Logger.add_to_log("info", permissions_required)
+                    Logger.add_to_log("info", permissions_list)
                     for pr in permissions_required:
                         permission = [pr[0].value, pr[1].value]
                         if permission not in permissions_list:

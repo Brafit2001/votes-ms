@@ -83,7 +83,7 @@ def get_post_by_id(*args, post_id):
 
 @posts.route('/', methods=['POST'])
 @Security.authenticate
-@Security.authorize(permissions_required=[(PermissionName.GROUPS_MANAGER, PermissionType.WRITE)])
+@Security.authorize(permissions_required=[(PermissionName.VOTES_MANAGER, PermissionType.WRITE)])
 def add_post(*args):
     try:
         user_id = int(request.form['user'])
